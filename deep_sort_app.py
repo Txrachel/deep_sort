@@ -165,7 +165,7 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
     tracker = Tracker(metric)   # A class with funcs
     results = []
     
-    # this func will be called below // callback one frame // where initialize vis?
+    # this func will be called below // callback one frame // vis = class Visualization
     def frame_callback(vis, frame_idx):   
         print("Processing frame %05d" % frame_idx)
 
@@ -174,7 +174,7 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             seq_info["detections"], frame_idx, min_detection_height)
         detections = [d for d in detections if d.confidence >= min_confidence]
 
-        # Run non-maxima suppression.
+        # Run non-maxima suppression. 非最大值抑制
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
         indices = preprocessing.non_max_suppression(
@@ -208,7 +208,7 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         visualizer = visualization.Visualization(seq_info, update_ms=5)  # show out seq_info in a constant freq.
     else:
         visualizer = visualization.NoVisualization(seq_info)
-    visualizer.run(frame_callback)
+    visualizer.run(frame_callback)  # function implementation statement
 
     # Store results.
     f = open(output_file, 'w')

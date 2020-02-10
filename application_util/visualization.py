@@ -96,7 +96,7 @@ class Visualization(object):
         self.frame_idx = seq_info["min_frame_idx"]
         self.last_idx = seq_info["max_frame_idx"]
 
-    def run(self, frame_callback):   # called in main
+    def run(self, frame_callback):   # called in main // run callback function & then cv2.write
         self.viewer.run(lambda: self._update_fun(frame_callback))
 
     def _update_fun(self, frame_callback):
