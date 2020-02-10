@@ -42,21 +42,21 @@ def gather_sequence_info(sequence_dir, detection_file):
     """
     image_dir = os.path.join(sequence_dir, "img1")
     image_filenames = {
-        int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
+        int(os.path.splitext(f)[0]): os.path.join(image_dir, f)   #func?
         for f in os.listdir(image_dir)}
-    groundtruth_file = os.path.join(sequence_dir, "gt/gt.txt")
+    groundtruth_file = os.path.join(sequence_dir, "gt/gt.txt")    #fen bie qu chu image & gt
 
     detections = None
     if detection_file is not None:
-        detections = np.load(detection_file)
+        detections = np.load(detection_file)   # loading detection by Kalmen-filter-based detector
     groundtruth = None
     if os.path.exists(groundtruth_file):
         groundtruth = np.loadtxt(groundtruth_file, delimiter=',')
 
     if len(image_filenames) > 0:
         image = cv2.imread(next(iter(image_filenames.values())),
-                           cv2.IMREAD_GRAYSCALE)
-        image_size = image.shape
+                           cv2.IMREAD_GRAYSCALE)  # why use grayscale?
+        image_size = image.shape         
     else:
         image_size = None
 
@@ -67,7 +67,7 @@ def gather_sequence_info(sequence_dir, detection_file):
         min_frame_idx = int(detections[:, 0].min())
         max_frame_idx = int(detections[:, 0].max())
 
-    info_filename = os.path.join(sequence_dir, "seqinfo.ini")
+    info_filename = os.path.join(sequence_dir, "seqinfo.ini")     # seqinfo stands for?
     if os.path.exists(info_filename):
         with open(info_filename, "r") as f:
             line_splits = [l.split('=') for l in f.read().splitlines()[1:]]
@@ -78,7 +78,7 @@ def gather_sequence_info(sequence_dir, detection_file):
     else:
         update_ms = None
 
-    feature_dim = detections.shape[1] - 10 if detections is not None else 0
+    feature_dim = detections.shape[1] - 10 if detections is not None else 0  # why shape[1] -10?
     seq_info = {
         "sequence_name": os.path.basename(sequence_dir),
         "image_filenames": image_filenames,
@@ -156,14 +156,17 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
     display : bool
         If True, show visualization of intermediate tracking results.
 
-    """
-    seq_info = gather_sequence_info(sequence_dir, detection_file)
-    metric = nn_matching.NearestNeighborDistanceMetric(
-        "cosine", max_cosine_distance, nn_budget)
-    tracker = Tracker(metric)
-    results = []
+    """ # the same with param.
 
-    def frame_callback(vis, frame_idx):
+    seq_info = gather_sequence_info(sequence_dir, detection_file)  # operate img/gt/seq_info
+    metric = nn_matching.NearestNeighborDistanceMetric(
+        "cosine", max_cosine_distance, nn_budget)    # smallest Mal distance & appearance descriptor
+                                                     # A class include 3 funcs
+    tracker = Tracker(metric)   # A class with funcs
+    results = []
+    
+    # this func will be called below // callback one frame // where initialize vis?
+    def frame_callback(vis, frame_idx):   
         print("Processing frame %05d" % frame_idx)
 
         # Load image and generate detections.
@@ -198,9 +201,11 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             results.append([
                 frame_idx, track.track_id, bbox[0], bbox[1], bbox[2], bbox[3]])
 
+    # this func will be called below
+
     # Run tracker.
     if display:
-        visualizer = visualization.Visualization(seq_info, update_ms=5)
+        visualizer = visualization.Visualization(seq_info, update_ms=5)  # show out seq_info in a constant freq.
     else:
         visualizer = visualization.NoVisualization(seq_info)
     visualizer.run(frame_callback)
@@ -242,7 +247,7 @@ def parse_args():
         "disregarded", default=0, type=int)
     parser.add_argument(
         "--nms_max_overlap",  help="Non-maxima suppression threshold: Maximum "
-        "detection overlap.", default=1.0, type=float)
+        "detection overlap.", default=1.0, type=float)    # the value 1.0 stands for?
     parser.add_argument(
         "--max_cosine_distance", help="Gating threshold for cosine distance "
         "metric (object appearance).", type=float, default=0.2)
@@ -251,7 +256,7 @@ def parse_args():
         "gallery. If None, no budget is enforced.", type=int, default=None)
     parser.add_argument(
         "--display", help="Show intermediate tracking results",
-        default=True, type=bool_string)
+        default=True, type=bool_string)     # show out the mediate process
     return parser.parse_args()
 
 

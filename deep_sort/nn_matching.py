@@ -120,7 +120,13 @@ class NearestNeighborDistanceMetric(object):
 
     """
 
-    def __init__(self, metric, matching_threshold, budget=None):
+    """
+    metric = nn_matching.NearestNeighborDistanceMetric(
+        "cosine", max_cosine_distance, nn_budget)    # smallest Mal distance & appearance descriptor
+    
+    """
+
+    def __init__(self, metric, matching_threshold, budget=None):    # default cosine distance = 0.2
 
 
         if metric == "euclidean":
@@ -171,7 +177,7 @@ class NearestNeighborDistanceMetric(object):
             `targets[i]` and `features[j]`.
 
         """
-        cost_matrix = np.zeros((len(targets), len(features)))
+        cost_matrix = np.zeros((len(targets), len(features)))   # initialize a nparray
         for i, target in enumerate(targets):
             cost_matrix[i, :] = self._metric(self.samples[target], features)
         return cost_matrix

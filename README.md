@@ -43,7 +43,7 @@ The following example starts the tracker on one of the
 [MOT16 benchmark](https://motchallenge.net/data/MOT16/)
 sequences.
 We assume resources have been extracted to the repository root directory and
-the MOT16 benchmark data is in `./MOT16`:
+the MOT16 benchmark data is in `./MOT16`:             --path
 ```
 python deep_sort_app.py \
     --sequence_dir=./MOT16/test/MOT16-06 \
@@ -108,7 +108,7 @@ In package `deep_sort` is the main tracking code:
 * `iou_matching.py`: This module contains the IOU matching metric.
 * `nn_matching.py`: A module for a nearest neighbor matching metric.
 * `track.py`: The track class contains single-target track data such as Kalman
-  state, number of hits, misses, hit streak, associated feature vectors, etc.
+  state, number of hits, misses, hit streak, associated feature vectors, etc.   ## hits / misses / hit streak / associated stands for?
 * `tracker.py`: This is the multi-target tracker class.
 
 The `deep_sort_app.py` expects detections in a custom format, stored in .npy

@@ -302,15 +302,15 @@ class ImageViewer(object):
         while not self._terminate:
             t0 = time.time()
             if not is_paused:
-                self._terminate = not self._user_fun()
+                self._terminate = not self._user_fun()  # remain true while running
                 if self._video_writer is not None:
                     self._video_writer.write(
-                        cv2.resize(self.image, self._window_shape))
+                        cv2.resize(self.image, self._window_shape))   # write func// cv2.VideoWriter.write func
             t1 = time.time()
             remaining_time = max(1, int(self._update_ms - 1e3*(t1-t0)))
             cv2.imshow(
                 self._caption, cv2.resize(self.image, self._window_shape[:2]))
-            key = cv2.waitKey(remaining_time)
+            key = cv2.waitKey(remaining_time)  # waiting time ?
             if key & 255 == 27:  # ESC
                 print("terminating")
                 self._terminate = True
