@@ -114,8 +114,8 @@ def create_detections(detection_mat, frame_idx, min_height=0):
         Returns detection responses at given frame index.
 
     """
-    frame_indices = detection_mat[:, 0].astype(np.int)
-    mask = frame_indices == frame_idx
+    frame_indices = detection_mat[:, 0].astype(np.int) # type(detection_mat) = np 
+    mask = frame_indices == frame_idx  # extract out info of frame_idx // type(mask) = list or int ?
 
     detection_list = []
     for row in detection_mat[mask]:
@@ -161,8 +161,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
     seq_info = gather_sequence_info(sequence_dir, detection_file)  # operate img/gt/seq_info
     metric = nn_matching.NearestNeighborDistanceMetric(
         "cosine", max_cosine_distance, nn_budget)    # smallest Mal distance & appearance descriptor
-                                                     # A class include 3 funcs
-    tracker = Tracker(metric)   # A class with funcs
+                                                     # metric = A class include 3 funcs
+    tracker = Tracker(metric)   # tracker = A class with funcs
     results = []
     
     # this func will be called below // callback one frame // vis = class Visualization
@@ -175,10 +175,10 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         detections = [d for d in detections if d.confidence >= min_confidence]
 
         # Run non-maxima suppression. 非最大值抑制
-        boxes = np.array([d.tlwh for d in detections])
-        scores = np.array([d.confidence for d in detections])
+        boxes = np.array([d.tlwh for d in detections])   # take out bbox
+        scores = np.array([d.confidence for d in detections])  # take out scores
         indices = preprocessing.non_max_suppression(
-            boxes, nms_max_overlap, scores)
+            boxes, nms_max_overlap, scores)              # (nms_max_overlap) default = 1.0
         detections = [detections[i] for i in indices]
 
         # Update tracker.

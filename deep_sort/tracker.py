@@ -37,14 +37,14 @@ class Tracker:
 
     """
 
-    def __init__(self, metric, max_iou_distance=0.7, max_age=30, n_init=3):   # track = Track(metric) // metric has 3 funcs
+    def __init__(self, metric, max_iou_distance=0.7, max_age=30, n_init=3):   # track = Tracker(metric) 
         self.metric = metric
         self.max_iou_distance = max_iou_distance   # iou_distance stands for?
         self.max_age = max_age  # A max
         self.n_init = n_init    # init frame num
 
         self.kf = kalman_filter.KalmanFilter()  # provide detection
-        self.tracks = []
+        self.tracks = []   # when was this list initiated?
         self._next_id = 1
 
     def predict(self):
@@ -53,7 +53,7 @@ class Tracker:
         This function should be called once every time step, before `update`.
         """
         for track in self.tracks:
-            track.predict(self.kf)
+            track.predict(self.kf) # ./track.py predict(self,kf)
 
     def update(self, detections):
         """Perform measurement update and track management.
@@ -66,14 +66,14 @@ class Tracker:
         """
         # Run matching cascade.
         matches, unmatched_tracks, unmatched_detections = \
-            self._match(detections)
+            self._match(detections)  # input self = type()?  
 
         # Update track set.
         for track_idx, detection_idx in matches:
             self.tracks[track_idx].update(
                 self.kf, detections[detection_idx])
         for track_idx in unmatched_tracks:
-            self.tracks[track_idx].mark_missed()
+            self.tracks[track_idx].mark_missed()    # mark_missed() ./track.py
         for detection_idx in unmatched_detections:
             self._initiate_track(detections[detection_idx])
         self.tracks = [t for t in self.tracks if not t.is_deleted()]
@@ -85,10 +85,10 @@ class Tracker:
             if not track.is_confirmed():
                 continue
             features += track.features
-            targets += [track.track_id for _ in track.features]
+            targets += [track.track_id for _ in track.features]   #??
             track.features = []
         self.metric.partial_fit(
-            np.asarray(features), np.asarray(targets), active_targets)
+            np.asarray(features), np.asarray(targets), active_targets) # update dictionary samples{}
 
     def _match(self, detections):
 
