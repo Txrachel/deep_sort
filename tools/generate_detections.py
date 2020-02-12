@@ -112,7 +112,7 @@ def create_box_encoder(model_filename, input_name="images",
         image_patches = np.asarray(image_patches)
         return image_encoder(image_patches, batch_size)
 
-    return encoder
+    return encoder   #no param?
 
 
 def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
@@ -133,6 +133,10 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         MOTChallenge structure: `[sequence]/det/det.txt`. If None, uses the
         standard MOTChallenge detections.
 
+    """
+
+    """
+    detections already exists?????
     """
     if detection_dir is None:
         detection_dir = mot_dir
@@ -172,7 +176,7 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
                 continue
             bgr_image = cv2.imread(
                 image_filenames[frame_idx], cv2.IMREAD_COLOR)
-            features = encoder(bgr_image, rows[:, 2:6].copy())
+            features = encoder(bgr_image, rows[:, 2:6].copy())  # extract features for match.
             detections_out += [np.r_[(row, feature)] for row, feature
                                in zip(rows, features)]
 
